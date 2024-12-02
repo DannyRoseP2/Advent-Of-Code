@@ -1,4 +1,4 @@
-﻿class Program
+﻿class Day1
 {
     static void Main()
     {
@@ -18,36 +18,32 @@
             }
         }
 
-        var totalDistance = GetTotalDistance(list1, list2);
         var similarityScore = GetSimilarityScore(list1, list2);
+        var totalDistance = GetTotalDistanceRecursive(0, list1, list2);
+        
         Console.WriteLine($"Part One Total :{totalDistance}");
         Console.WriteLine($"Similarity Score :{similarityScore}");
     }
 
-    static int GetTotalDistance(List<int> list1, List<int> list2)
+    static int GetTotalDistanceRecursive(int total, List<int> l1, List<int> l2)
     {
-        var l1 = new List<int>(list1);
-        var l2 = new List<int>(list2);
-        var total = 0;
-        while (l1.Count > 0)
-        {
-            var min1 = l1.Min();
-            var min2 = l2.Min();
-            l1.Remove(min1);
-            l2.Remove(min2);
-            total += min1 > min2 ? (min1 - min2) : (min2 - min1);
-        }
-        return total;
+        if (l1.Count == 0)
+            return total;
+        
+        var min1 = l1.Min();
+        var min2 = l2.Min();
+        l1.Remove(min1);
+        l2.Remove(min2);
+        total += min1 > min2 ? (min1 - min2) : (min2 - min1);
+        return GetTotalDistanceRecursive(total, l1, l2);
     }
 
     static int GetSimilarityScore(List<int> list1, List<int> list2)
     {
-        
         var similarityScore = 0;
-        for(int i = 0; i < list1.Count; i++)
+        foreach (var num in list1)
         {
-            var num = list1[i];
-            var numCount = list2.FindAll(t => t == num).Count();
+            var numCount = list2.FindAll(x => x == num).Count();
             similarityScore += num * numCount;
         }
         return similarityScore;
