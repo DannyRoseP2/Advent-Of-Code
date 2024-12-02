@@ -1,0 +1,65 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\repos\\Advent Of Code\\AdventOfCode2024\\AdventOfCode2024.csproj": {}
+  },
+  "projects": {
+    "D:\\repos\\Advent Of Code\\AdventOfCode2024\\AdventOfCode2024.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\repos\\Advent Of Code\\AdventOfCode2024\\AdventOfCode2024.csproj",
+        "projectName": "AdventOfCode2024",
+        "projectPath": "D:\\repos\\Advent Of Code\\AdventOfCode2024\\AdventOfCode2024.csproj",
+        "packagesPath": "D:\\packages\\nuget",
+        "outputPath": "D:\\repos\\Advent Of Code\\AdventOfCode2024\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "D:\\packages\\Nuget": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://pkgs.dev.azure.com/quiktrip/71389b8b-53cc-4a3e-8617-5015a03a8cdd/_packaging/CE.Development/nuget/v3/index.json": {},
+          "https://pkgs.dev.azure.com/quiktrip/_packaging/QT.Internal/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
