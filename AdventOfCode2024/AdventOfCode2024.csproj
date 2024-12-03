@@ -8,11 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="inputs\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="inputs\day1input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="inputs\day2test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="inputs\day2input.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
