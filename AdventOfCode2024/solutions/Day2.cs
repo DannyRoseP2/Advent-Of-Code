@@ -59,7 +59,6 @@ partial class Program
   
     public static bool IsStepSafe(int a, int b, bool increasing)
     {
-
         var diff = a - b;
         var absDiff = Math.Abs(diff);
         var cond1 = (increasing && diff < 0) || (!increasing && diff > 0);
@@ -68,4 +67,3 @@ partial class Program
         return result;
     }
 }
-
