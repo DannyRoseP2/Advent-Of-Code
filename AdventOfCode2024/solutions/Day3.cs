@@ -2,66 +2,97 @@
 
 partial class Program
 {
-    //99675963
+    const string enableToken = "do()";
+    const string disableToken = "don't()";
+    const string instructionToken = "mul(";
+
     public static void RunDay3()
     {
-        string filePath = "inputs\\day3input.txt";
-        string input = File.ReadAllText(filePath);
-        List<string> instructons = new List<string>();
-        int total = 0;
+        string logFileName = Path.Combine("logs", "day3log.txt");
+        string input = File.ReadAllText("inputs\\day3input.txt");
+        
+        Dictionary<int, string> instructions = new Dictionary<int, string>();
+        List<int> enableTokenIndexes = new List<int>();
+        List<int> disableTokenIndexes = new List<int>();
+        List<int> possibleInstructionTokenIndexes = new List<int>();
 
-        const string instructionToken = "mul(";
-        const string enableToken = "do()";
-        const string disableToken = "don't()";
-        int nextinstructionTokenIndex;
-        int nextEnableTokenIndex;
-        int nextDisableTokenIndex;
-        var enabled = true;
-        var loops = 1;
-
-        while (input.Length >= 8) 
+        
+        enableTokenIndexes = FindTokenIndexes(input, enableToken);
+        foreach (var index in enableTokenIndexes)
         {
-            nextinstructionTokenIndex = input.IndexOf(instructionToken);
-            nextEnableTokenIndex = input.IndexOf(enableToken);
-            nextDisableTokenIndex = input.IndexOf(disableToken);
-            if (enabled)
-            {
-
-                if ((nextDisableTokenIndex > 0) && (nextDisableTokenIndex < nextinstructionTokenIndex))
-                {
-                    input = input.Substring(nextDisableTokenIndex + disableToken.Length);
-                    enabled = false;
-                }
-                else
-                {
-                    input = input.Substring(nextinstructionTokenIndex);
-                    input = TryParseInstruction(input, instructons, ref total);
-                }
-            }
-            else
-            {
-                input = input.Substring(nextEnableTokenIndex + enableToken.Length);
-                enabled = true;
-            }
-            loops++;
+            instructions.Add(index, enableToken);
         }
 
+        disableTokenIndexes = FindTokenIndexes(input, disableToken);
+        foreach (var index in disableTokenIndexes)
+        {
+            instructions.Add(index, disableToken);
+        }
 
-        Console.WriteLine($"Instructions Found:{instructons.Count}");
-        Console.WriteLine("input.Length:" + input.Length);
-        Console.WriteLine($"total: {total}");
-        Console.WriteLine($"loops: {loops}");
+        possibleInstructionTokenIndexes = FindTokenIndexes(input, instructionToken);
+        foreach (int i in possibleInstructionTokenIndexes) 
+        {
+            if (TryParseInstruction(input.Substring(i), out string instruction))
+            {
+                instructions.Add(i, instruction);
+            }
+        }
+
+        var enabled = true;
+        var total = 0;
+        foreach (var instruction in instructions.OrderBy(x => x.Key))
+        {
+            if (instruction.Value == enableToken)
+            {
+                enabled = true;
+            }
+            else if (instruction.Value == disableToken)
+            {
+                enabled = false;
+            }
+            else if (instruction.Value.StartsWith(instructionToken) && enabled)
+            {
+                total += GetInstructionProduct(instruction.Value);
+            }
+        }
+
+        Console.WriteLine($"Total: {total}");
     }
 
-    public static string TryParseInstruction(string input, List<string> instructons, ref int total)
+    static List<int> FindTokenIndexes(string input, string token)
+    {
+        List<int> indexes = new List<int>();
+        int index = 0;
+
+        while ((index = input.IndexOf(token, index, StringComparison.Ordinal)) != -1)
+        {
+            indexes.Add(index);
+            index += token.Length;
+        }
+
+        return indexes;
+    }
+
+    static int GetInstructionProduct(string instruction)
+    {
+        var commaIndex = instruction.IndexOf(',');
+        var strFactor1 = instruction.Substring(4, commaIndex - 4);
+        var strFactor2 = instruction.Substring(commaIndex + 1, instruction.Length - (commaIndex + 2));
+        var factor1 = int.Parse(strFactor1);
+        var factor2 = int.Parse(strFactor2);
+        return factor1 * factor2;
+    }
+
+    static bool TryParseInstruction(string input, out string instruction)
     {
         //Skip the initial "mul("
         input = input.Substring(4);
+        instruction = "";
         var digitBuffer = new StringBuilder();
         var cursorIndex = 0;
         int factor1, factor2;
 
-        for(int i = 0; char.IsDigit(input[i]); i++)
+        for (int i = 0; char.IsDigit(input[i]); i++)
         {
             digitBuffer.Append(input[i]);
             cursorIndex++;
@@ -71,12 +102,12 @@ partial class Program
         digitBuffer.Clear();
 
         if (input[cursorIndex] != ',')
-            return input.Substring(cursorIndex);
+            return false;
 
         cursorIndex++;
 
         if (!char.IsDigit(input[cursorIndex]))
-            return input.Substring(cursorIndex);
+            return false;
 
         for (int i = cursorIndex; char.IsDigit(input[i]); i++)
         {
@@ -88,14 +119,9 @@ partial class Program
         digitBuffer.Clear();
 
         if (input[cursorIndex] != ')')
-            return input.Substring(cursorIndex);
+            return false;
 
-        cursorIndex++;
-
-        var instruction = $"mul({factor1},{factor2})";
-        instructons.Add(instruction);
-        total += factor1 * factor2;
-        return input.Substring(cursorIndex);
+        instruction = $"mul({factor1},{factor2})";
+        return true;
     }
-
 }
