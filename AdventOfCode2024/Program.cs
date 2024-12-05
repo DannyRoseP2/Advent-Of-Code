@@ -20,6 +20,9 @@
             case "3":
                 RunDay3();
                 break;
+            case "4":
+                RunDay4();
+                break;
             // Add cases for more days
             default:
                 Console.WriteLine($"Day {day} is not implemented.");
