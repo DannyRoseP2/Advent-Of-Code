@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 partial class Program
@@ -13,47 +14,162 @@ partial class Program
         int rows = input.Length;
         int cols = input[0].Length;
         char[,] matrix = GetMatrix(input, rows, cols);
+        int row = 3;
+        int col = 0;
 
-        var wordCount = GetWordCountForNode(matrix, 0, 5);
 
-        Console.WriteLine($"WordCount:{wordCount}");
+
+        //var total = GetWordCountForNode(matrix, row, col);
+        var total = SearchMatrix(matrix);
+        Console.WriteLine($"total:{total}");
     }
 
-    static char[,] GetMatrix(string[] input, int rows, int cols)
+    static int  SearchMatrix(char[,] matrix)
     {
-        char[,] matrix = new char[rows, cols];
+        int rows = matrix.GetLength(0);
+        int cols = matrix.GetLength(1);
+        var total = 0;
 
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
             {
-                matrix[i, j] = input[i][j];
+                total += GetWordCountForNode(matrix, i, j);
             }
         }
-        return matrix;
+        return total;
     }
+    
 
     static int GetWordCountForNode(char[,] matrix, int row, int col)
     {
         int count = 0;
-        if (SearchEast(matrix, row, col))
+
+        //if (SearchEast(matrix, row, col))
+        //    count++;
+
+        //if (SearchWest(matrix, row, col))
+        //    count++;
+
+        if (SearchNorth(matrix, row, col))
+            count++;
+
+        if (SearchSouth(matrix, row, col))
             count++;
 
         return count;
     }
 
+    //Searches
     static bool SearchEast(char[,] matrix, int row, int col)
     {
-        for (int i = col; i < XMAS.Length; i++)
+        bool result;
+        List<char> east = new List<char>(); 
+        var charsRemaining = matrix.GetLength(0) - col;
+        
+        if (charsRemaining < XMAS.Length)
         {
-            if (!(matrix[row, i] == XMAS[i]))
-                return false;
+            result = false;
         }
-        return true;           
+        else
+        {
+            for (int i = col; i < col + XMAS.Length; i++)
+            {
+                east.Add(matrix[row, i]);
+            }
+            var eastStr = new string(east.ToArray());
+            result = eastStr.Equals(XMAS);
+        }
+        return result;          
     }
 
-    static void PrintMatrix(char[,] matrix, int rows, int cols)
+    static bool SearchWest(char[,] matrix, int row, int col)
     {
+        bool result;
+        List<char> west = new List<char>();
+
+        if (col < XMAS.Length - 1)
+        {
+            result = false;
+        }
+        else
+        {
+            for (int i = col; i >= (col  - (XMAS.Length - 1)); i--)
+            {
+                west.Add(matrix[row, i]);
+            }
+            var weastStr = new string(west.ToArray());
+            result = weastStr.Equals(XMAS);
+        }
+        return result;
+    }
+
+    static bool SearchNorth(char[,] matrix, int row, int col)
+    {
+        bool result;
+        List<char> north = new List<char>();
+
+        if (row < XMAS.Length - 1)
+        {
+            result = false;
+        }
+        else
+        {
+            for (int i = row; i >= (row - (XMAS.Length - 1)); i--)
+            {
+                north.Add(matrix[i, col]);
+            }
+            var northStr = new string(north.ToArray());
+            result = northStr.Equals(XMAS);
+        }
+
+        if (result)
+        {
+            Console.WriteLine($"Found North at: ({row},{col})");
+            PrintMatrixWithNodeHighlight(matrix, row, col);
+            Console.WriteLine();
+        }
+
+        return result;
+    }
+
+    static bool SearchSouth(char[,] matrix, int row, int col)
+    {
+        bool result;
+        List<char> south = new List<char>();
+        var totalRows = matrix.GetLength(1);
+        if ((totalRows - row) < (XMAS.Length - 1))
+        {
+            result = false;
+        }
+        else
+        {
+            for (int i = row; i <= row + XMAS.Length; i++)
+            {
+                south.Add(matrix[i, col]);
+            }
+            var southStr = new string(south.ToArray());
+            Console.WriteLine($"Southstr:{southStr}");
+            result = southStr.Equals(XMAS);
+        }
+
+        if (result)
+        {
+            Console.WriteLine($"Found North at: ({row},{col})");
+            PrintMatrixWithNodeHighlight(matrix, row, col);
+            Console.WriteLine();
+        }
+
+        return result;
+    }
+
+
+    //Utility
+
+    static void PrintMatrix(char[,] matrix)
+    {
+        int rows = matrix.GetLength(0);
+        int cols = matrix.GetLength(1);
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
@@ -62,5 +178,45 @@ partial class Program
             }
             Console.WriteLine();
         }
+    }
+
+    static void PrintMatrixWithNodeHighlight(char[,] matrix, int hlRow, int hlCol)
+    {
+        int rows = matrix.GetLength(0);
+        int cols = matrix.GetLength(1);
+
+        const int cellWidth = 3; 
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (i == hlRow && j == hlCol)
+                {
+                    Console.Write($"({matrix[i, j]})".PadRight(cellWidth + 1));
+                }
+                else if (i == hlRow && j == (hlCol - 1))
+                {
+                    Console.Write($"{matrix[i, j]}".PadRight(cellWidth - 1));
+                }
+                else
+                {
+                    Console.Write($"{matrix[i, j]}".PadRight(cellWidth));
+                }
+            }
+            Console.WriteLine(); 
+        }
+    }
+
+    static char[,] GetMatrix(string[] input, int rows, int cols)
+    {
+        char[,] matrix = new char[rows, cols];
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                matrix[i, j] = input[i][j];
+            }
+        }
+        return matrix;
     }
 }
